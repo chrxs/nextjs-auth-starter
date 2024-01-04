@@ -8,7 +8,9 @@ export default async function UsersPage() {
       <h1 className="font-bold">Users</h1>
       <ul>
         {users.map((user) => (
-          <li key={user.id}>{user.name} - {user.email}</li>
+          <li key={user.id}>
+            {user.name} - {user.email}
+          </li>
         ))}
       </ul>
     </main>
