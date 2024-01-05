@@ -1,10 +1,6 @@
-import NextAuth from "next-auth";
 import type { NextAuthConfig, User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-
-import prisma from "@/utils/prisma";
 
 declare module "next-auth" {
   interface Session {
@@ -14,10 +10,11 @@ declare module "next-auth" {
   }
 }
 
-export const authConfig = {
+const authConfig = {
   debug: false,
   providers: [
     Google,
+
     // Credentials({
     //   credentials: { password: { label: "Password", type: "password" } },
     //   authorize(c) {
@@ -36,10 +33,14 @@ export const authConfig = {
       return !!auth?.user;
     },
   },
+
+  // pages: {
+  // signIn: "/auth/signin",
+  // signOut: "/auth/signout",
+  // error: "/auth/error", // Error code passed in query string as ?error=
+  // verifyRequest: "/auth/verify-request", // (used for check email message)
+  // newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
+  // },
 } satisfies NextAuthConfig;
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
-  ...authConfig,
-});
+export default authConfig;

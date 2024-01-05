@@ -1,16 +1,18 @@
-import { signOut } from "@/auth";
+"use client";
+
+import { useFormState } from "react-dom";
+
+import { signOut } from "@/auth/actions";
+import SubmitButton from "./SubmitButton";
 
 export default function SignOut(props: React.ComponentPropsWithRef<"button">) {
+  const [_formState, formAction] = useFormState(signOut, null);
+
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut();
-      }}
-    >
-      <button type="submit" {...props}>
+    <form action={formAction}>
+      <SubmitButton type="submit" {...props}>
         Sign Out
-      </button>
+      </SubmitButton>
     </form>
   );
 }
