@@ -2,12 +2,13 @@
 
 import { useSession } from "next-auth/react";
 
+import { LoadingIndicator } from "@/components";
+
 export default function AuthLoading({ children }: React.PropsWithChildren) {
   const { data: session, status } = useSession();
-  console.log({ session, status });
 
   if (status === "loading") {
-    return <div>Loading....</div>;
+    return <LoadingIndicator />;
   }
 
   return children;
