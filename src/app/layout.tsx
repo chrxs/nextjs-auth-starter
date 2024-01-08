@@ -15,14 +15,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren) {
   const session = await auth();
 
   return (
     <html lang="en">
-      <body className={`bg-primary p-2 h-screen ${inter.className}`}>
+      <body className={`bg-primary h-screen ${inter.className}`}>
         <Providers session={session}>
           <AuthLoading>
             {session ? (
