@@ -1,7 +1,7 @@
-import prisma from "@/utils/prisma";
+import db from "@/lib/db";
 
 export default async function UsersPage() {
-  const users = await prisma.user.findMany();
+  const users = await db.user.findMany();
 
   return (
     <main>
