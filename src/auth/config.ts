@@ -17,7 +17,7 @@ declare module "next-auth" {
 
 export const API_AUTH_PREFIX = "/api/auth";
 
-export const DEFAULT_LOGIN_REDIRECT = "/";
+export const DEFAULT_SIGN_IN_REDIRECT = "/";
 
 // const authRoutes = [
 //   "/auth/sign-in",
