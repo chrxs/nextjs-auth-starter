@@ -16,7 +16,7 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = Boolean(req.auth);
   const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
-  const isPublicRoute = Object.values(PUBLIC_ROUTES).includes(nextUrl.pathname);
+  const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
   const isAuthRoute = Object.values(AUTH_ROUTES).includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {
@@ -39,25 +39,14 @@ export default auth((req) => {
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
 
     return Response.redirect(
-      new URL(
-        `${AUTH_ROUTES.signIn}?callbackUrl=${encodedCallbackUrl}`,
-        nextUrl,
-      ),
+      new URL(`/auth/sign-in?callbackUrl=${encodedCallbackUrl}`, nextUrl),
     );
   }
 
   return null;
 });
 
+// Optionally, don't invoke Middleware on some paths
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };

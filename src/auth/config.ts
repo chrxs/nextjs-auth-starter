@@ -19,22 +19,15 @@ export const API_AUTH_PREFIX = "/api/auth";
 
 export const DEFAULT_SIGN_IN_REDIRECT = "/";
 
-// const authRoutes = [
-//   "/auth/sign-in",
-//   "/auth/register",
-//   "/auth/error",
-//   "/auth/reset",
-//   "/auth/new-password",
-// ];
-export const AUTH_ROUTES = {
-  signIn: "/sign-in",
-  // signOut: "/auth/sign-out",
-  // error: "/auth/error", // Error code passed in query string as ?error=
-  // verifyRequest: "/auth/verify-request", // (used for check email message)
-  // newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
-};
+export const AUTH_ROUTES = [
+  "/auth/sign-in",
+  "/auth/register",
+  // "/auth/error",
+  // "/auth/reset",
+  // "/auth/new-password"
+];
 
-export const PUBLIC_ROUTES = {};
+export const PUBLIC_ROUTES: string[] = [];
 
 const providers = [
   process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET && Google,
@@ -75,7 +68,13 @@ const authConfig = {
     },
   },
 
-  pages: AUTH_ROUTES,
+  pages: {
+    signIn: "/auth/sign-in",
+    // signOut: "/auth/sign-out",
+    // error: "/auth/error", // Error code passed in query string as ?error=
+    // verifyRequest: "/auth/verify-request", // (used for check email message)
+    // newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
+  },
 } satisfies NextAuthConfig;
 
 export default authConfig;

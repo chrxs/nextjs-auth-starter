@@ -8,36 +8,29 @@ import { DEFAULT_SIGN_IN_REDIRECT } from "../config";
 import { SignInSchema } from "../schemas";
 import { getUserByEmail } from "@/data/user";
 
-export type State =
-  | {
-      status: "success";
-      message: string;
-    }
-  | {
-      status: "error";
-      message: string;
-      errors?: Array<{
-        path: string;
-        message: string;
-      }>;
-    }
-  | null;
+export type ActionResponse = {
+  status: "success" | "error";
+  message?: string;
+  errors?: z.ZodIssue[];
+};
+
+export type FormValues = z.infer<typeof SignInSchema>;
 
 export default async function signInWithCredentials(
-  prevState: State | null,
-  formData: FormData,
+  formValues: FormValues,
   // callbackUrl?: string | null,
-) {
-  // Artificial delay; don't forget to remove that!
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+): Promise<ActionResponse> {
+  const validationResult = SignInSchema.safeParse(formValues);
 
-  const validatedFields = SignInSchema.safeParse(Object.fromEntries(formData));
-
-  if (!validatedFields.success) {
-    return { status: "error", message: "Invalid fields!" };
+  if (!validationResult.success) {
+    return {
+      status: "error",
+      message: "Invalid fields!",
+      errors: validationResult.error.errors,
+    };
   }
 
-  const { email, password } = validatedFields.data;
+  const { email, password } = validationResult.data;
 
   // const existingUser = await getUserByEmail(email);
 
@@ -47,25 +40,32 @@ export default async function signInWithCredentials(
 
   console.log({ email, password });
 
-  await signIn("credentials", {
-    email,
-    password,
-    redirectTo: DEFAULT_SIGN_IN_REDIRECT,
-    // redirectTo: callbackUrl || DEFAULT_SIGN_IN_REDIRECT,
-  });
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_SIGN_IN_REDIRECT,
+      // redirectTo: callbackUrl || DEFAULT_SIGN_IN_REDIRECT,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        status: "error",
+        message: "Invalid credentials",
+        errors: [
+          {
+            code: "custom",
+            path: ["root"],
+            message: "Invalid credentials",
+          },
+        ],
+      };
+    }
 
-  // try {
-  // } catch (error) {
-  //   console.log("error", error);
-  //   if (error instanceof AuthError) {
-  //     switch (error.type) {
-  //       case "CredentialsSignin":
-  //         return { status: "error", message: "Invalid credentials!" };
-  //       default:
-  //         return { status: "error", message: "Something went wrong!" };
-  //     }
-  //   }
+    throw error;
+  }
 
-  //   throw error;
-  // }
+  return {
+    status: "success",
+  };
 }
