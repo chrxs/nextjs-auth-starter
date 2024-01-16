@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { UserRole } from "@prisma/client";
 import type { NextAuthConfig, User } from "next-auth";
 import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
@@ -10,8 +11,8 @@ import { getUserByEmail } from "@/data/user";
 declare module "next-auth" {
   interface Session {
     user: {
-      picture?: string;
-    } & Omit<User, "id">;
+      role: UserRole;
+    } & User;
   }
 }
 
@@ -27,7 +28,7 @@ export const AUTH_ROUTES = [
   // "/auth/new-password"
 ];
 
-export const PUBLIC_ROUTES: string[] = [];
+export const PUBLIC_ROUTES = ["/auth/verify-email"];
 
 const providers = [
   process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET && Google,
@@ -62,12 +63,6 @@ const providers = [
 const authConfig = {
   debug: false,
   providers,
-  callbacks: {
-    authorized({ auth }) {
-      return !!auth?.user;
-    },
-  },
-
   pages: {
     signIn: "/auth/sign-in",
     // signOut: "/auth/sign-out",

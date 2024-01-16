@@ -3,6 +3,8 @@
 import * as z from "zod";
 
 import { RegisterSchema } from "../schemas";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 import { getUserByEmail, createUser } from "@/data/user";
 
 export type ActionResponse = {
@@ -50,7 +52,11 @@ export default async function register(
     password,
   });
 
+  const verificationToken = await generateVerificationToken(email);
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
   return {
     status: "success",
+    message: "Confirmation email sent!",
   };
 }

@@ -1,13 +1,13 @@
 import Link from "next/link";
 
-import { RegisterForm } from "../_components";
+import { Card, RegisterForm } from "../_components";
 
 export default function Register() {
   return (
-    <div>
+    <Card title="Register">
       <RegisterForm />
 
       <Link href="/auth/sign-in">Sign in</Link>
-    </div>
+    </Card>
   );
 }
