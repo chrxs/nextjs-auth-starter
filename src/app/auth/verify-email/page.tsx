@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 
 import { verifyEmail } from "@/auth/actions";
-import { Alert } from "@/components";
+import { Alert, Link } from "@/components";
 import { Card } from "../_components";
 
 interface Props {

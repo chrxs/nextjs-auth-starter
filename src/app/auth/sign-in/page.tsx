@@ -1,8 +1,7 @@
-import Link from "next/link";
-
+import { Link } from "@/components";
 import { Card, SignInForm } from "../_components";
 
-export default function SignIn() {
+export default function SignInPage() {
   return (
     <Card title="Sign In">
       <SignInForm />

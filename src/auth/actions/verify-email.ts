@@ -5,8 +5,6 @@ import { getUserByEmail } from "@/data/user";
 import { getVerificationTokenByToken } from "@/data/verification-token";
 
 export default async function verifyEmail(token: string) {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {

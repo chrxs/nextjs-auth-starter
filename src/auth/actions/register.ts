@@ -23,7 +23,7 @@ export default async function register(
   if (!validationResult.success) {
     return {
       status: "error",
-      message: "Invalid fields!",
+      message: "Invalid fields",
       errors: validationResult.error.errors,
     };
   }
@@ -35,7 +35,6 @@ export default async function register(
   if (existingUser) {
     return {
       status: "error",
-      message: "Email already in use",
       errors: [
         {
           code: "custom",
@@ -57,6 +56,6 @@ export default async function register(
 
   return {
     status: "success",
-    message: "Confirmation email sent!",
+    message: "Confirmation email sent",
   };
 }

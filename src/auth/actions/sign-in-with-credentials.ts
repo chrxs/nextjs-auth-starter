@@ -63,8 +63,6 @@ export default async function signInWithCredentials(
     return { status: "success", message: "Confirmation email sent!" };
   }
 
-  console.log({ email, password });
-
   try {
     await signIn("credentials", {
       email,

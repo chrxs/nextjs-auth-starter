@@ -23,9 +23,9 @@ export const DEFAULT_SIGN_IN_REDIRECT = "/";
 export const AUTH_ROUTES = [
   "/auth/sign-in",
   "/auth/register",
-  // "/auth/error",
-  // "/auth/reset",
-  // "/auth/new-password"
+  "/auth/error",
+  "/auth/forgot-password",
+  "/auth/reset-password",
 ];
 
 export const PUBLIC_ROUTES = ["/auth/verify-email"];
