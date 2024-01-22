@@ -1,24 +1,27 @@
 "use client";
 
 import * as z from "zod";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { flow, map, get } from "lodash/fp";
+import { flow, map } from "lodash/fp";
 
 import { RegisterSchema } from "@/auth/schemas";
 import registerUser, { FormValues } from "@/auth/actions/register";
 import { Button, Input, LoadingIndicator } from "@/components";
 import { getErrorsFromServerResponse } from "../_utils";
 
-const mapWithIndex = (map as any).convert({ cap: false });
-
 export default function RegisterForm() {
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const clearSuccessMessage = () => setSuccessMessage(null);
+
   const {
     handleSubmit,
     register,
     setError,
-    formState: { submitCount, isValid, errors, isSubmitting },
+    formState: { errors, isSubmitting },
+    reset,
   } = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -29,7 +32,13 @@ export default function RegisterForm() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    clearSuccessMessage();
     const response = await registerUser(data);
+
+    if (response.status === "success") {
+      setSuccessMessage(response.message || null);
+      reset();
+    }
 
     // set errors from server response
     flow(

@@ -4,8 +4,8 @@ import * as z from "zod";
 
 import { ForgotPasswordSchema } from "../schemas";
 import { getUserByEmail } from "@/data/user";
-import { sendPasswordResetEmail } from "@/lib/mail";
-import { generatePasswordResetToken } from "@/lib/tokens";
+import { sendPasswordResetEmail } from "@/auth/mail";
+import { generatePasswordResetToken } from "@/auth/tokens";
 
 export type ActionResponse = {
   status: "success" | "error";

@@ -50,6 +50,7 @@ export default function ResetPasswordForm() {
         <Input
           type="password"
           placeholder="password"
+          autoComplete="new-password"
           {...register("password")}
         />
         <ErrorMessage errors={errors} name="password" />

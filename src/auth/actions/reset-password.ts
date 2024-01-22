@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 
@@ -101,5 +102,6 @@ export default async function resetPassword(
     where: { id: existingToken.id },
   });
 
-  return { status: "success", message: "Password updated" };
+  // return { status: "success", message: "Password updated" };
+  redirect("/auth/sign-in");
 }

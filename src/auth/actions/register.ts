@@ -3,8 +3,8 @@
 import * as z from "zod";
 
 import { RegisterSchema } from "../schemas";
-import { generateVerificationToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail";
+import { generateVerificationToken } from "@/auth/tokens";
+import { sendVerificationEmail } from "@/auth/mail";
 import { getUserByEmail, createUser } from "@/data/user";
 
 export type ActionResponse = {

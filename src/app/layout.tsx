@@ -12,6 +12,18 @@ export const metadata: Metadata = {
   description: "",
 };
 
+function AuthenticatedLayout({ children }: React.PropsWithChildren) {
+  return (
+    <div className="flex flex-row gap-4 h-full p-2">
+      <SideBar />
+
+      <main className="bg-white p-4 rounded-md flex-1 drop-shadow-lg">
+        {children}
+      </main>
+    </div>
+  );
+}
+
 export default async function RootLayout({
   children,
 }: React.PropsWithChildren) {
@@ -22,13 +34,7 @@ export default async function RootLayout({
       <body className={`bg-primary h-screen ${inter.className}`}>
         <Providers session={session}>
           {session ? (
-            <div className="flex flex-row gap-4 h-full p-2">
-              <SideBar />
-
-              <main className="bg-white p-4 rounded-md flex-1 drop-shadow-lg">
-                {children}
-              </main>
-            </div>
+            <AuthenticatedLayout>{children}</AuthenticatedLayout>
           ) : (
             children
           )}
