@@ -33,8 +33,8 @@ export default function ForgotPasswordForm() {
     clearSuccessMessage();
     const response = await forgotPassword(data);
 
-    if (response.status === "success") {
-      setSuccessMessage(response.message || null);
+    if (response?.success) {
+      setSuccessMessage(response?.success || null);
       reset();
     }
 

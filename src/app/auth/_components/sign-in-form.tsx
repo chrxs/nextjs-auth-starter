@@ -15,6 +15,8 @@ import { getErrorsFromServerResponse } from "../_utils";
 
 export default function SignInForm() {
   const [showTwoFactorCode, setShowTwoFactorCode] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const clearSuccessMessage = () => setSuccessMessage(null);
 
   const {
     handleSubmit,
@@ -24,7 +26,7 @@ export default function SignInForm() {
     reset,
   } = useForm<FormValues>({
     mode: "onSubmit",
-    resolver: zodResolver(SignInSchema),
+    // resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -33,9 +35,12 @@ export default function SignInForm() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    clearSuccessMessage();
     const response = await signInWithCredentials(data);
 
-    if (response?.status === "error") {
+    setSuccessMessage(response?.success || null);
+
+    if (response?.errors) {
       reset();
     }
 
@@ -60,8 +65,10 @@ export default function SignInForm() {
     >
       {isSubmitting && <LoadingIndicator />}
 
+      {successMessage && <Alert type="success">{successMessage}</Alert>}
+
       {errors?.root?.message && (
-        <Alert type="error">{errors.root.message}</Alert>
+        <Alert type="error">{errors?.root?.message}</Alert>
       )}
 
       {showTwoFactorCode && (

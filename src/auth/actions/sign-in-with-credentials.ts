@@ -2,6 +2,7 @@
 
 import * as z from "zod";
 import { AuthError } from "next-auth";
+import bcrypt from "bcryptjs";
 
 import db from "@/lib/db";
 import { signIn } from "../auth";
@@ -17,10 +18,9 @@ import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 
 export type ActionResponse = {
-  status: "success" | "error";
-  message?: string;
+  success?: string;
   errors?: z.ZodIssue[];
-  twoFactor?: true;
+  twoFactor?: boolean;
 };
 
 export type FormValues = z.infer<typeof SignInSchema>;
@@ -33,8 +33,6 @@ export default async function signInWithCredentials(
 
   if (!validationResult.success) {
     return {
-      status: "error",
-      message: "Invalid fields!",
       errors: validationResult.error.errors,
     };
   }
@@ -45,8 +43,20 @@ export default async function signInWithCredentials(
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return {
-      status: "error",
-      message: "Invalid credentials",
+      errors: [
+        {
+          code: "custom",
+          path: ["root"],
+          message: "Invalid credentials",
+        },
+      ],
+    };
+  }
+
+  const passwordsMatch = await bcrypt.compare(password, existingUser.password);
+
+  if (!passwordsMatch) {
+    return {
       errors: [
         {
           code: "custom",
@@ -67,7 +77,7 @@ export default async function signInWithCredentials(
       verificationToken.token,
     );
 
-    return { status: "success", message: "Confirmation email sent!" };
+    return { success: "Confirmation email sent!" };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -76,7 +86,6 @@ export default async function signInWithCredentials(
 
       if (!twoFactorToken || twoFactorToken.token !== code) {
         return {
-          status: "error",
           errors: [
             {
               code: "custom",
@@ -91,7 +100,6 @@ export default async function signInWithCredentials(
 
       if (hasExpired) {
         return {
-          status: "error",
           errors: [
             {
               code: "custom",
@@ -125,7 +133,7 @@ export default async function signInWithCredentials(
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
       await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
-      return { status: "success", twoFactor: true };
+      return { success: "2FA code sent", twoFactor: true };
     }
   }
 
@@ -140,8 +148,6 @@ export default async function signInWithCredentials(
       switch (error.type) {
         case "CredentialsSignin":
           return {
-            status: "error",
-            message: "Invalid credentials",
             errors: [
               {
                 code: "custom",
@@ -153,8 +159,6 @@ export default async function signInWithCredentials(
 
         default:
           return {
-            status: "error",
-            message: "Something went wrong",
             errors: [
               {
                 code: "custom",
@@ -170,6 +174,6 @@ export default async function signInWithCredentials(
   }
 
   return {
-    status: "success",
+    success: "Signed in successfully",
   };
 }

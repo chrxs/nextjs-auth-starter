@@ -8,8 +8,7 @@ import { sendPasswordResetEmail } from "@/auth/mail";
 import { generatePasswordResetToken } from "@/auth/tokens";
 
 export type ActionResponse = {
-  status: "success" | "error";
-  message?: string;
+  success?: string;
   errors?: z.ZodIssue[];
 };
 
@@ -22,8 +21,6 @@ export default async function forgotPassword(
 
   if (!validationResult.success) {
     return {
-      status: "error",
-      message: "Invalid fields",
       errors: validationResult.error.errors,
     };
   }
@@ -34,7 +31,6 @@ export default async function forgotPassword(
 
   if (!existingUser) {
     return {
-      status: "error",
       errors: [
         {
           code: "custom",
@@ -52,5 +48,5 @@ export default async function forgotPassword(
     passwordResetToken.token,
   );
 
-  return { status: "success", message: "Reset email sent" };
+  return { success: "Reset email sent" };
 }

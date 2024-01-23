@@ -8,8 +8,7 @@ import { sendVerificationEmail } from "@/auth/mail";
 import { getUserByEmail, createUser } from "@/data/user";
 
 export type ActionResponse = {
-  status: "success" | "error";
-  message?: string;
+  success?: string;
   errors?: z.ZodIssue[];
 };
 
@@ -22,8 +21,6 @@ export default async function register(
 
   if (!validationResult.success) {
     return {
-      status: "error",
-      message: "Invalid fields",
       errors: validationResult.error.errors,
     };
   }
@@ -34,7 +31,6 @@ export default async function register(
 
   if (existingUser) {
     return {
-      status: "error",
       errors: [
         {
           code: "custom",
@@ -55,7 +51,6 @@ export default async function register(
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
   return {
-    status: "success",
-    message: "Confirmation email sent",
+    success: "Confirmation email sent",
   };
 }

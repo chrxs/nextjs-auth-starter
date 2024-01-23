@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { UserRole } from "@prisma/client";
-import type { NextAuthConfig, User } from "next-auth";
+import type { NextAuthConfig, User, DefaultSession } from "next-auth";
 import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -8,11 +8,15 @@ import Google from "next-auth/providers/google";
 import { SignInSchema } from "@/auth/schemas";
 import { getUserByEmail } from "@/data/user";
 
+export type ExtendedUser = DefaultSession["user"] & {
+  role: UserRole;
+  isTwoFactorEnabled: boolean;
+  isOAuth: boolean;
+};
+
 declare module "next-auth" {
   interface Session {
-    user: {
-      role: UserRole;
-    } & User;
+    user: ExtendedUser;
   }
 }
 

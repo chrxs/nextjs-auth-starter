@@ -10,8 +10,7 @@ import { getUserByEmail } from "@/data/user";
 import db from "@/lib/db";
 
 export type ActionResponse = {
-  status: "success" | "error";
-  message?: string;
+  success?: string;
   errors?: z.ZodIssue[];
 };
 
@@ -23,7 +22,6 @@ export default async function resetPassword(
 ): Promise<ActionResponse> {
   if (!token) {
     return {
-      status: "error",
       errors: [
         {
           code: "custom",
@@ -38,8 +36,6 @@ export default async function resetPassword(
 
   if (!validationResult.success) {
     return {
-      status: "error",
-      message: "Invalid fields",
       errors: validationResult.error.errors,
     };
   }
@@ -50,7 +46,6 @@ export default async function resetPassword(
 
   if (!existingToken) {
     return {
-      status: "error",
       errors: [
         {
           code: "custom",
@@ -65,7 +60,6 @@ export default async function resetPassword(
 
   if (hasExpired) {
     return {
-      status: "error",
       errors: [
         {
           code: "custom",
@@ -80,7 +74,6 @@ export default async function resetPassword(
 
   if (!existingUser) {
     return {
-      status: "error",
       errors: [
         {
           code: "custom",
@@ -102,6 +95,6 @@ export default async function resetPassword(
     where: { id: existingToken.id },
   });
 
-  // return { status: "success", message: "Password updated" };
+  // return { success: "Password updated" };
   redirect("/auth/sign-in");
 }

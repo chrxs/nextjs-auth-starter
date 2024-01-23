@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
@@ -8,18 +9,22 @@ import { flow, map } from "lodash/fp";
 
 import { ResetPasswordSchema } from "@/auth/schemas";
 import resetPassword, { FormValues } from "@/auth/actions/reset-password";
-import { Button, Input, LoadingIndicator } from "@/components";
+import { Alert, Button, Input, LoadingIndicator } from "@/components";
 import { getErrorsFromServerResponse } from "../_utils";
 
 export default function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const clearSuccessMessage = () => setSuccessMessage(null);
+
   const {
     handleSubmit,
     register,
     setError,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<FormValues>({
     mode: "onSubmit",
     resolver: zodResolver(ResetPasswordSchema),
@@ -29,7 +34,13 @@ export default function ResetPasswordForm() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    clearSuccessMessage();
     const response = await resetPassword(data, token);
+
+    if (response?.success) {
+      setSuccessMessage(response?.success || null);
+      reset();
+    }
 
     // set errors from server response
     flow(
@@ -44,7 +55,11 @@ export default function ResetPasswordForm() {
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       {isSubmitting && <LoadingIndicator />}
 
-      {errors?.root?.message && <p>{errors.root.message}</p>}
+      {successMessage && <Alert type="success">{successMessage}</Alert>}
+
+      {errors?.root?.message && (
+        <Alert type="error">{errors.root.message}</Alert>
+      )}
 
       <div className="flex flex-col gap-2">
         <Input

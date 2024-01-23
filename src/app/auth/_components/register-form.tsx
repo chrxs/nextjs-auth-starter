@@ -1,6 +1,5 @@
 "use client";
 
-import * as z from "zod";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
@@ -9,7 +8,7 @@ import { flow, map } from "lodash/fp";
 
 import { RegisterSchema } from "@/auth/schemas";
 import registerUser, { FormValues } from "@/auth/actions/register";
-import { Button, Input, LoadingIndicator } from "@/components";
+import { Alert, Button, Input, LoadingIndicator } from "@/components";
 import { getErrorsFromServerResponse } from "../_utils";
 
 export default function RegisterForm() {
@@ -22,7 +21,7 @@ export default function RegisterForm() {
     setError,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<z.infer<typeof RegisterSchema>>({
+  } = useForm<FormValues>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       name: "",
@@ -35,8 +34,8 @@ export default function RegisterForm() {
     clearSuccessMessage();
     const response = await registerUser(data);
 
-    if (response.status === "success") {
-      setSuccessMessage(response.message || null);
+    if (response?.success) {
+      setSuccessMessage(response?.success || null);
       reset();
     }
 
@@ -53,7 +52,11 @@ export default function RegisterForm() {
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       {isSubmitting && <LoadingIndicator />}
 
-      {errors?.root?.message && <p>{errors.root.message}</p>}
+      {successMessage && <Alert type="success">{successMessage}</Alert>}
+
+      {errors?.root?.message && (
+        <Alert type="error">{errors.root.message}</Alert>
+      )}
 
       <div className="flex flex-col gap-2">
         <Input

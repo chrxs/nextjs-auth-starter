@@ -8,19 +8,19 @@ export default async function verifyEmail(token: string) {
   const existingToken = await getVerificationTokenByToken(token);
 
   if (!existingToken) {
-    return { status: "error", message: "Token does not exist!" };
+    return { status: "error", message: "Token does not exist" };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { status: "error", message: "Token has expired!" };
+    return { status: "error", message: "Token has expired" };
   }
 
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { status: "error", message: "Email does not exist!" };
+    return { status: "error", message: "Email does not exist" };
   }
 
   await db.user.update({
@@ -35,5 +35,5 @@ export default async function verifyEmail(token: string) {
     where: { id: existingToken.id },
   });
 
-  return { status: "success", message: "Email verified!" };
+  return { status: "success", message: "Email verified" };
 }
