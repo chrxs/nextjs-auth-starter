@@ -1,6 +1,7 @@
 "use server";
 
 import * as z from "zod";
+import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 
@@ -77,7 +78,7 @@ export default async function signInWithCredentials(
       verificationToken.token,
     );
 
-    return { success: "Confirmation email sent!" };
+    return { success: "Confirmation email sent" };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -86,6 +87,7 @@ export default async function signInWithCredentials(
 
       if (!twoFactorToken || twoFactorToken.token !== code) {
         return {
+          twoFactor: true,
           errors: [
             {
               code: "custom",
@@ -141,7 +143,7 @@ export default async function signInWithCredentials(
     await signIn("credentials", {
       email,
       password,
-      redirectTo,
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -173,7 +175,5 @@ export default async function signInWithCredentials(
     throw error;
   }
 
-  return {
-    success: "Signed in successfully",
-  };
+  redirect(redirectTo);
 }

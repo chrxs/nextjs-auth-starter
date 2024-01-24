@@ -1,6 +1,4 @@
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from "@/mail";
 
 const domain = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -10,7 +8,7 @@ export default async function sendPasswordResetEmail(
 ) {
   const resetLink = `${domain}/auth/reset-password?token=${token}`;
 
-  await resend.emails.send({
+  await sendEmail({
     from: process.env.EMAIL_FROM as string,
     to: email,
     subject: "Reset your password",

@@ -37,6 +37,11 @@ export default function ResetPasswordForm() {
     clearSuccessMessage();
     const response = await resetPassword(data, token);
 
+    if (!response) {
+      // to maintain isSubmitting state whilst redirecting
+      return new Promise(() => {});
+    }
+
     if (response?.success) {
       setSuccessMessage(response?.success || null);
       reset();

@@ -95,6 +95,5 @@ export default async function resetPassword(
     where: { id: existingToken.id },
   });
 
-  // return { success: "Password updated" };
   redirect("/auth/sign-in");
 }

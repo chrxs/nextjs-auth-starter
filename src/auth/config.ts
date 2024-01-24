@@ -39,13 +39,13 @@ const providers = [
 
   Credentials({
     async authorize(credentials) {
-      const validatedFields = SignInSchema.safeParse(credentials);
+      const validationResult = SignInSchema.safeParse(credentials);
 
-      if (!validatedFields.success) {
+      if (!validationResult.success) {
         return null;
       }
 
-      const { email, password } = validatedFields.data;
+      const { email, password } = validationResult.data;
 
       const user = await getUserByEmail(email);
 

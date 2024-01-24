@@ -8,7 +8,7 @@ import { SideBar, Providers } from "@/components";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Meal Planner",
+  title: "APP TITLE",
   description: "",
 };
 

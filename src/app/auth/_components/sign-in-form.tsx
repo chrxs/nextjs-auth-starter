@@ -10,11 +10,14 @@ import { SignInSchema } from "@/auth/schemas";
 import signInWithCredentials, {
   FormValues,
 } from "@/auth/actions/sign-in-with-credentials";
+import resendTwoFactorToken from "@/auth/actions/resend-two-factor-token";
 import { Alert, Button, Input, Link, LoadingIndicator } from "@/components";
 import { getErrorsFromServerResponse } from "../_utils";
 
 export default function SignInForm() {
   const [showTwoFactorCode, setShowTwoFactorCode] = useState(false);
+  const [isResendingTwoFactorToken, setIsResendingTwoFactorToken] =
+    useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const clearSuccessMessage = () => setSuccessMessage(null);
 
@@ -22,11 +25,13 @@ export default function SignInForm() {
     handleSubmit,
     register,
     setError,
+    getValues,
     formState: { errors, isSubmitting },
     reset,
+    resetField,
   } = useForm<FormValues>({
     mode: "onSubmit",
-    // resolver: zodResolver(SignInSchema),
+    resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -40,13 +45,18 @@ export default function SignInForm() {
 
     setSuccessMessage(response?.success || null);
 
-    if (response?.errors) {
-      reset();
+    if (!response) {
+      // to maintain isSubmitting state whilst redirecting
+      return new Promise(() => {});
     }
 
-    if (response?.twoFactor) {
-      setShowTwoFactorCode(true);
+    resetField("code");
+
+    if (!response?.twoFactor) {
+      resetField("password");
     }
+
+    setShowTwoFactorCode(Boolean(response?.twoFactor));
 
     // set errors from server response
     flow(
@@ -55,6 +65,20 @@ export default function SignInForm() {
         setError(name, error, config);
       }),
     )(response);
+  };
+
+  const onResendTwoFactorToken = async () => {
+    clearSuccessMessage();
+    setIsResendingTwoFactorToken(true);
+    const response = await resendTwoFactorToken({
+      email: getValues("email"),
+    });
+    setSuccessMessage(response?.success || null);
+    if (response?.error) {
+      reset();
+      setShowTwoFactorCode(false);
+    }
+    setIsResendingTwoFactorToken(false);
   };
 
   return (
@@ -75,6 +99,14 @@ export default function SignInForm() {
         <div className="flex flex-col gap-2">
           <Input {...register("code")} />
           <ErrorMessage errors={errors} name="code" />
+
+          <button
+            type="button"
+            disabled={isResendingTwoFactorToken}
+            onClick={onResendTwoFactorToken}
+          >
+            {isResendingTwoFactorToken ? "loading..." : "Resend code"}
+          </button>
         </div>
       )}
 
@@ -104,7 +136,10 @@ export default function SignInForm() {
         </>
       )}
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        disabled={isSubmitting || isResendingTwoFactorToken}
+      >
         {showTwoFactorCode ? "Submit" : "Sign In"}
       </Button>
     </form>
