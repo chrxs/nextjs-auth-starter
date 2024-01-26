@@ -31,15 +31,15 @@ export default auth((req) => {
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    let redirectTo = nextUrl.pathname;
+    let callbackUrl = nextUrl.pathname;
     if (nextUrl.search) {
-      redirectTo += nextUrl.search;
+      callbackUrl += nextUrl.search;
     }
 
-    const encodedCallbackUrl = encodeURIComponent(redirectTo);
+    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
 
     return Response.redirect(
-      new URL(`/auth/sign-in?redirectTo=${encodedCallbackUrl}`, nextUrl),
+      new URL(`/auth/sign-in?callbackUrl=${encodedCallbackUrl}`, nextUrl),
     );
   }
 

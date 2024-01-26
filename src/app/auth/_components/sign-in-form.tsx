@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +16,9 @@ import { Alert, Button, Input, Link, LoadingIndicator } from "@/components";
 import { getErrorsFromServerResponse } from "../_utils";
 
 export default function SignInForm() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
   const [showTwoFactorCode, setShowTwoFactorCode] = useState(false);
   const [isResendingTwoFactorToken, setIsResendingTwoFactorToken] =
     useState(false);
@@ -41,7 +45,10 @@ export default function SignInForm() {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     clearSuccessMessage();
-    const response = await signInWithCredentials(data);
+    const response = await signInWithCredentials(
+      data,
+      callbackUrl ?? undefined,
+    );
 
     setSuccessMessage(response?.success || null);
 

@@ -1,7 +1,6 @@
 "use server";
 
 import * as z from "zod";
-import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 
@@ -28,7 +27,7 @@ export type FormValues = z.infer<typeof SignInSchema>;
 
 export default async function signInWithCredentials(
   formValues: FormValues,
-  redirectTo: string = DEFAULT_SIGN_IN_REDIRECT,
+  callbackUrl: string = DEFAULT_SIGN_IN_REDIRECT,
 ): Promise<ActionResponse> {
   const validationResult = SignInSchema.safeParse(formValues);
 
@@ -143,7 +142,7 @@ export default async function signInWithCredentials(
     await signIn("credentials", {
       email,
       password,
-      redirect: false,
+      redirectTo: callbackUrl,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -175,5 +174,5 @@ export default async function signInWithCredentials(
     throw error;
   }
 
-  redirect(redirectTo);
+  return { success: "success" };
 }
