@@ -23,7 +23,9 @@ interface Props {
 export default function SettingsForm({ user }: Props) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const clearSuccessMessage = () => setSuccessMessage(null);
-  const { data: session, update } = useSession();
+  const { data: session, update, status } = useSession();
+
+  const isLoading = status === "loading";
 
   const {
     handleSubmit,
@@ -43,15 +45,9 @@ export default function SettingsForm({ user }: Props) {
     },
   });
 
-  console.log("SESSION", session, isSubmitting);
-
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     clearSuccessMessage();
-    return updateUserSettings({
-      ...data,
-      password: data?.password || undefined,
-      newPassword: data?.newPassword || undefined,
-    }).then((response) => {
+    return updateUserSettings(data).then((response) => {
       if (response?.success) {
         setSuccessMessage(response?.success || null);
       }
@@ -74,7 +70,7 @@ export default function SettingsForm({ user }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      {isSubmitting && <LoadingIndicator />}
+      {(isSubmitting || isLoading) && <LoadingIndicator />}
 
       {successMessage && <Alert type="success">{successMessage}</Alert>}
 
@@ -132,7 +128,7 @@ export default function SettingsForm({ user }: Props) {
         <ErrorMessage errors={errors} name="isTwoFactorEnabled" />
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button type="submit" disabled={isSubmitting || isLoading}>
         Update
       </Button>
     </form>

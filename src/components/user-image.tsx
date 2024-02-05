@@ -8,8 +8,12 @@ type Props = {
 };
 
 export default function UserImage({ size = 64 }: Props) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { image, name } = session?.user ?? {};
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   if (image) {
     return (

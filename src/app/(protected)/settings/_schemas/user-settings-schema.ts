@@ -7,15 +7,20 @@ export const UserSettingsSchema = z
     isTwoFactorEnabled: z.optional(z.boolean()),
     // role: z.enum([UserRole.ADMIN, UserRole.USER]),
     // email: z.optional(z.string().email()),
-    password: z.optional(z.string().min(6)),
-    newPassword: z.optional(z.string().min(6)),
+    password: z.preprocess(
+      (val) => (val === "" ? undefined : val),
+      z.optional(z.string().min(6)),
+    ),
+    newPassword: z.preprocess(
+      (val) => (val === "" ? undefined : val),
+      z.optional(z.string().min(6)),
+    ),
   })
   .refine(
     (data) => {
       if (data.password && !data.newPassword) {
         return false;
       }
-
       return true;
     },
     {
@@ -28,7 +33,6 @@ export const UserSettingsSchema = z
       if (data.newPassword && !data.password) {
         return false;
       }
-
       return true;
     },
     {
