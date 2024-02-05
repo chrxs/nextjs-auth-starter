@@ -9,7 +9,7 @@ import { flow, map } from "lodash/fp";
 import { ForgotPasswordSchema } from "@/auth/schemas";
 import forgotPassword, { FormValues } from "@/auth/actions/forgot-password";
 import { Alert, Button, Input, LoadingIndicator } from "@/components";
-import { getErrorsFromServerResponse } from "../_utils";
+import { getErrorsForReactHookFormFromServerResponse } from "@/lib/utils";
 
 export default function ForgotPasswordForm() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export default function ForgotPasswordForm() {
 
     // set errors from server response
     flow(
-      getErrorsFromServerResponse,
+      getErrorsForReactHookFormFromServerResponse,
       map(({ name, error, config }) => {
         setError(name, error, config);
       }),

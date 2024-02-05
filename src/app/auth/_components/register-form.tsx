@@ -9,7 +9,7 @@ import { flow, map } from "lodash/fp";
 import { RegisterSchema } from "@/auth/schemas";
 import registerUser, { FormValues } from "@/auth/actions/register";
 import { Alert, Button, Input, LoadingIndicator } from "@/components";
-import { getErrorsFromServerResponse } from "../_utils";
+import { getErrorsForReactHookFormFromServerResponse } from "@/lib/utils";
 
 export default function RegisterForm() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -41,7 +41,7 @@ export default function RegisterForm() {
 
     // set errors from server response
     flow(
-      getErrorsFromServerResponse,
+      getErrorsForReactHookFormFromServerResponse,
       map(({ name, error, config }) => {
         setError(name, error, config);
       }),

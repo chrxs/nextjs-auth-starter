@@ -16,6 +16,9 @@ export default function SideBar() {
             <li>
               <Link href="/users">Users</Link>
             </li>
+            <li>
+              <Link href="/settings">Settings</Link>
+            </li>
           </ul>
         </nav>
       </div>

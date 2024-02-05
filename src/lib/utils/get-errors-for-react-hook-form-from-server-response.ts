@@ -3,7 +3,7 @@ import { flow, map, get } from "lodash/fp";
 
 const mapWithIndex = (map as any).convert({ cap: false });
 
-const getErrorsFromServerResponse = flow(
+const getErrorsForReactHookFormFromServerResponse = flow(
   get("errors"),
   mapWithIndex(({ path, message }: z.ZodIssue, index: number) => {
     return {
@@ -14,4 +14,4 @@ const getErrorsFromServerResponse = flow(
   }),
 );
 
-export default getErrorsFromServerResponse;
+export default getErrorsForReactHookFormFromServerResponse;

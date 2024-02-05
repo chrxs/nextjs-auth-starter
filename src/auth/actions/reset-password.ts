@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 
-import { ResetPasswordSchema } from "../schemas";
+import { ResetPasswordSchema } from "@/auth/schemas";
+import { AUTH_SIGN_IN_PATH } from "@/auth/routes";
 import { getPasswordResetTokenByToken } from "@/data/password-reset-token";
 import { getUserByEmail } from "@/data/user";
 import db from "@/lib/db";
@@ -95,5 +96,5 @@ export default async function resetPassword(
     where: { id: existingToken.id },
   });
 
-  redirect("/auth/sign-in");
+  redirect(AUTH_SIGN_IN_PATH);
 }

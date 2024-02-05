@@ -1,3 +1,4 @@
+import { AUTH_SIGN_IN_PATH } from "@/auth/routes";
 import { Link } from "@/components";
 import { Card, ResetPasswordForm } from "../_components";
 
@@ -6,7 +7,7 @@ export default function ResetPasswordPage() {
     <Card title="Reset Password">
       <ResetPasswordForm />
 
-      <Link href="/auth/sign-in">Sign in</Link>
+      <Link href={AUTH_SIGN_IN_PATH}>Sign in</Link>
     </Card>
   );
 }

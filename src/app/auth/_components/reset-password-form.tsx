@@ -10,7 +10,7 @@ import { flow, map } from "lodash/fp";
 import { ResetPasswordSchema } from "@/auth/schemas";
 import resetPassword, { FormValues } from "@/auth/actions/reset-password";
 import { Alert, Button, Input, LoadingIndicator } from "@/components";
-import { getErrorsFromServerResponse } from "../_utils";
+import { getErrorsForReactHookFormFromServerResponse } from "@/lib/utils";
 
 export default function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -49,7 +49,7 @@ export default function ResetPasswordForm() {
 
     // set errors from server response
     flow(
-      getErrorsFromServerResponse,
+      getErrorsForReactHookFormFromServerResponse,
       map(({ name, error, config }) => {
         setError(name, error, config);
       }),

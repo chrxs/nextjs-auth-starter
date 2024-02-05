@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { verifyEmail } from "@/auth/actions";
+import { AUTH_SIGN_IN_PATH } from "@/auth/routes";
 import { Alert, Link } from "@/components";
 import { Card } from "../_components";
 
@@ -12,7 +13,7 @@ export default async function VerifyEmailPage({
   searchParams: { token },
 }: Props) {
   if (!token) {
-    redirect("/auth/sign-in");
+    redirect(AUTH_SIGN_IN_PATH);
   }
 
   const response = await verifyEmail(token);
@@ -23,7 +24,7 @@ export default async function VerifyEmailPage({
         {response.message}
       </Alert>
 
-      <Link href="/auth/sign-in">Sign In</Link>
+      <Link href={AUTH_SIGN_IN_PATH}>Sign in</Link>
     </Card>
   );
 }

@@ -8,7 +8,7 @@ import { getAccountByUserId } from "@/data/account";
 import { getUserById } from "@/data/user";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut, update } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
 

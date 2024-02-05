@@ -8,12 +8,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { flow, map } from "lodash/fp";
 
 import { SignInSchema } from "@/auth/schemas";
+import { AUTH_FORGOT_PASSWORD_PATH } from "@/auth/routes";
 import signInWithCredentials, {
   FormValues,
 } from "@/auth/actions/sign-in-with-credentials";
 import resendTwoFactorToken from "@/auth/actions/resend-two-factor-token";
 import { Alert, Button, Input, Link, LoadingIndicator } from "@/components";
-import { getErrorsFromServerResponse } from "../_utils";
+import { getErrorsForReactHookFormFromServerResponse } from "@/lib/utils";
 
 export default function SignInForm() {
   const searchParams = useSearchParams();
@@ -67,7 +68,7 @@ export default function SignInForm() {
 
     // set errors from server response
     flow(
-      getErrorsFromServerResponse,
+      getErrorsForReactHookFormFromServerResponse,
       map(({ name, error, config }) => {
         setError(name, error, config);
       }),
@@ -138,7 +139,7 @@ export default function SignInForm() {
             />
             <ErrorMessage errors={errors} name="password" />
 
-            <Link href="/auth/forgot-password">Forgot password?</Link>
+            <Link href={AUTH_FORGOT_PASSWORD_PATH}>Forgot password?</Link>
           </div>
         </>
       )}
