@@ -14,11 +14,14 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: React.PropsWithChildren) {
+  params: { locale },
+}: React.PropsWithChildren<{ params: { locale: string } }>) {
   const session = await auth();
 
+  // console.log("locale", locale);
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={`bg-primary h-screen ${inter.className}`}>
         <Providers session={session}>{children}</Providers>
       </body>

@@ -1,4 +1,4 @@
-import { Link, SignOut, UserImage } from "@/components";
+import { Link, SignOut, UserImage, LanguageSelect } from "@/components";
 
 export default function SideBar() {
   return (
@@ -21,6 +21,8 @@ export default function SideBar() {
             </li>
           </ul>
         </nav>
+
+        <LanguageSelect />
       </div>
 
       <div className="flex-none">

@@ -1,5 +1,10 @@
-import NextLink, { LinkProps } from "next/link";
+import { ComponentProps } from "react";
 
-export default function Link(props: React.PropsWithChildren<LinkProps>) {
-  return <NextLink {...props} />;
+import { Link as I18nLink } from "@/i18n/navigation";
+
+export default function Link({
+  href,
+  ...props
+}: ComponentProps<typeof I18nLink>) {
+  return <I18nLink href={href} {...props} />;
 }
